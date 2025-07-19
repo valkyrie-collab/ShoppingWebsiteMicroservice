@@ -1,23 +1,12 @@
 package com.valkyrie.cart_service.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-@Entity
-@Table(name = "cart")
-public class Cart {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private int productId;
+public class CartWrapper {
+    private int id;//hidden
+    private int productId;//hidden
     private String brand;
     private String name;
     private String description;
     private String specification;
-    private String username;
     private int quantity;
 
     public int getId() {return id;}
@@ -30,52 +19,42 @@ public class Cart {
 
     public int getQuantity() {return quantity;}
 
-    public String getUsername() {return username;}
-
     public String getDescription() {return description;}
 
     public String getSpecification() {return specification;}
 
-    public Cart setId(int id) {
+     public CartWrapper setId(int id) {
         this.id = id;
         return this;
     }
 
-    public Cart setProductId(int productId) {
+    public CartWrapper setProductId(int productId) {
         this.productId = productId;
         return this;
     }
 
-    public Cart setBrand(String brand) {
+    public CartWrapper setBrand(String brand) {
         this.brand = brand;
         return this;
     }
 
-    public Cart setName(String name) {
+    public CartWrapper setName(String name) {
         this.name = name;
         return this;
     }
 
-    public Cart setQuantity(int quantity) {
+    public CartWrapper setQuantity(int quantity) {
         this.quantity = quantity;
         return this;
     }
 
-    public Cart setUsername(String username) {
-        this.username = username;
-        return this;
-    }
-
-    public Cart setDescription(String description) {
+    public CartWrapper setDescription(String description) {
         this.description = description;
         return this;
     }
 
-    public Cart setSpecification(String specification) {
+    public CartWrapper setSpecification(String specification) {
         this.specification = specification;
         return this;
     }
-
-    @Override
-    public String toString() {return id + brand + name + description + specification;}
 }
