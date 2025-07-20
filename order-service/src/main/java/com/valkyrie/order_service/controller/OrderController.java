@@ -2,6 +2,7 @@ package com.valkyrie.order_service.controller;
 
 import java.util.List;
 
+import com.valkyrie.order_service.config.TokenConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +19,10 @@ import com.valkyrie.order_service.model.OrderWrapper;
 @RestController
 @RequestMapping("/order")
 public class OrderController {
+    private TokenConfig config;
+    @Autowired
+    private void setConfig(TokenConfig config) {this.config = config;}
+
     private OrderService service;
     @Autowired
     private void setService(OrderService service) {this.service = service;}
@@ -26,7 +31,8 @@ public class OrderController {
     public ResponseEntity<String> placeOrder(@RequestParam int productId,
                                              @RequestParam int quantity, 
                                              @RequestParam String address,
-                                             @RequestParam String username) {
+                                             @RequestParam String token) {
+        String username = config.getUsername(token);
         Store<String> store = service.saveOrder(productId, quantity, address, username);
         return ResponseEntity.status(store.getStatus()).body(store.getInstance());
     }
@@ -45,7 +51,8 @@ public class OrderController {
     }
 
     @GetMapping("/display-order")
-    public ResponseEntity<List<OrderWrapper>> displayOrder(@RequestParam String username) {
+    public ResponseEntity<List<OrderWrapper>> displayOrder(@RequestParam String token) {
+        String username = config.getUsername(token);
         Store<List<OrderWrapper>> store = service.displayOrder(username);
         return ResponseEntity.status(store.getStatus()).body(store.getInstance());
     }

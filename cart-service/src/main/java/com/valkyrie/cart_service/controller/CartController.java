@@ -2,6 +2,7 @@ package com.valkyrie.cart_service.controller;
 
 import java.util.List;
 
+import com.valkyrie.cart_service.config.TokenConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,14 +19,19 @@ import com.valkyrie.cart_service.model.CartWrapper;
 @RestController
 @RequestMapping("/cart")
 public class CartController {
+    private TokenConfig config;
+    @Autowired
+    private void setConfig(TokenConfig config) {this.config = config;}
+
     private CartService service;
     @Autowired
     private void setService(CartService service) {this.service = service;}
 
     @PostMapping("/save-to-cart")
     public ResponseEntity<String> saveCart(@RequestParam int productId, 
-                                           @RequestParam String username,
+                                           @RequestParam String token,
                                            @RequestParam int quantity) {
+        String username = config.getUsername(token);
         Store<String> store = service.saveCart(productId, username, quantity);
         return ResponseEntity.status(store.getStatus()).body(store.getInstance());
     }
@@ -43,13 +49,15 @@ public class CartController {
     }
 
     @DeleteMapping("/remove-all-from-cart")
-    public ResponseEntity<String> removeFromCart(@RequestParam String username) {
+    public ResponseEntity<String> removeFromCart(@RequestParam String token) {
+        String username = config.getUsername(token);
         Store<String> store = service.removeFromCart(username);
         return ResponseEntity.status(store.getStatus()).body(store.getInstance());
     }
 
     @GetMapping("/display-cart")
-    public ResponseEntity<List<CartWrapper>> displayCart(@RequestParam String username) {
+    public ResponseEntity<List<CartWrapper>> displayCart(@RequestParam String token) {
+        String username = config.getUsername(token);
         Store<List<CartWrapper>> store = service.displayCart(username);
         return ResponseEntity.status(store.getStatus()).body(store.getInstance());
     }
