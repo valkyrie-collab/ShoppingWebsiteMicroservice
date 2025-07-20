@@ -1,0 +1,102 @@
+version: "3.8"
+
+services:
+  service-registry:
+    build: ./api-gateway
+    ports:
+      - "8761:8761"
+    environment:
+      HOSTNAME: service-registry
+      PORT: 8761
+    networks:
+      - my-network
+
+  product-service:
+    build: ./authentication-service
+    ports:
+      - "8081:8081"
+    environment:
+      URL: jdbc:postgresql://postgres:5432/product
+      USERNAME: valkyrie
+      PASSWORD: 3008
+      JWTS_SECURITY: JE3pjQYJ6/+hrQO0zo/6dydd9p7Xez+aZYfXfbLgm+U=
+      PORT: 8081
+    networks:
+      - my-network
+
+#not application.properties not done
+  order-service:
+    build: ./cart-service
+    ports:
+      - "8082:8082"
+    environment:
+      URL: jdbc:postgresql://postgres:5432/product
+      USERNAME: valkyrie
+      PASSWORD: 3008
+      JWTS_SECURITY: JE3pjQYJ6/+hrQO0zo/6dydd9p7Xez+aZYfXfbLgm+U=
+      PORT: 8082
+    networks:
+      - my-network
+
+  #not application.properties not done
+  cart-service:
+    build: ./order-service
+    ports:
+      - "8083:8083"
+    environment:
+      URL: jdbc:postgresql://postgres:5432/product
+      USERNAME: valkyrie
+      PASSWORD: 3008
+      JWTS_SECURITY: JE3pjQYJ6/+hrQO0zo/6dydd9p7Xez+aZYfXfbLgm+U=
+      PORT: 8083
+    networks:
+      - my-network
+
+  #not application.properties not done
+  authentication-service:
+    build: ./authentication-service
+    ports:
+      - "8084:8084"
+    environment:
+      URL: jdbc:postgresql://postgres:5432/product
+      USERNAME: valkyrie
+      PASSWORD: 3008
+      JWTS_SECURITY: JE3pjQYJ6/+hrQO0zo/6dydd9p7Xez+aZYfXfbLgm+U=
+      PORT: 8081
+    networks:
+      - my-network
+
+  #not application.properties not done
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - product-service
+      - order-service
+      - cart-service
+      - authentication-service
+    environment:
+      JWTS_SECURITY: JE3pjQYJ6/+hrQO0zo/6dydd9p7Xez+aZYfXfbLgm+U=
+      PORT: 8080
+    networks:
+      - my-network
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: valkyrie
+      POSTGRES_PASSWORD: 3008
+      POSTGRES_DB: valkyrieDB
+    networks:
+      - my-network
+    volumes:
+      - postgres-store-data:/var/lib/postgresql/data
+      - ./Dbms/dbms.sql:/docker-entrypoint-initdb.d/dbms.sql
+
+networks:
+  my-network:
+    driver: bridge
+
+volumes:
+  postgres-store-data:

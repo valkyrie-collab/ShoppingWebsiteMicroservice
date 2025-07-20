@@ -1,0 +1,4 @@
+CREATE DATABASE authentication;
+CREATE DATABASE cart
+CREATE DATABASE orders
+CREATE DATABASE product
