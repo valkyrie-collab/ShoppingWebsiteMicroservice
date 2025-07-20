@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.valkyrie.cart_service.feign.ProductFeignController;
 import com.valkyrie.cart_service.model.Cart;
@@ -59,7 +60,6 @@ public class CartService {
             return Store.initialize(HttpStatus.NOT_ACCEPTABLE, "Cart is empty...");
         }
 
-        int checkQuantity = cart.getQuantity();
         Product product = feign.productById(cart.getProductId()).getBody();
 
         if (product == null) {
@@ -75,8 +75,7 @@ public class CartService {
         repo.save(cart);
 
         cart = repo.findById(cart.getId()).orElse(null);
-        return cart != null && cart.getQuantity() != checkQuantity?
-                    Store.initialize(HttpStatus.ACCEPTED, 
+        return cart != null?Store.initialize(HttpStatus.ACCEPTED, 
                     "Product with ID = " + product.getId() + " has been successfully updated in cart") :
                     Store.initialize(HttpStatus.NOT_ACCEPTABLE, "Product not update in cart...");
     }
@@ -98,5 +97,20 @@ public class CartService {
         }
 
         return Store.initialize(HttpStatus.OK, wrappers);
+    }
+
+    public Store<String> removeFromCart(int id) {
+        repo.deleteById(id);
+        return repo.findById(id).orElse(null) == null?
+                Store.initialize(HttpStatus.OK, "removed successfully...") : 
+                Store.initialize(HttpStatus.BAD_REQUEST, "Remove is not successfull....");
+    }
+
+    @Transactional
+    public Store<String> removeFromCart(String username) {
+        repo.deleteAllByUsername(username);
+        return repo.findAllByUsername(username).isEmpty()?
+                Store.initialize(HttpStatus.OK, "removed successfully...") : 
+                Store.initialize(HttpStatus.BAD_REQUEST, "Remove is not successfull....");
     }
 }

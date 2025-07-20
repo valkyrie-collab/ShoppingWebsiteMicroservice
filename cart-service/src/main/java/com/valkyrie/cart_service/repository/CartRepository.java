@@ -11,4 +11,6 @@ import com.valkyrie.cart_service.model.Cart;
 public interface CartRepository extends JpaRepository<Cart, Integer> {
 
     List<Cart> findAllByUsername(String username);
+
+    void deleteAllByUsername(String username);
 }
