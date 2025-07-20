@@ -33,8 +33,8 @@ public class AuthenticationController {
     }
 
     @GetMapping("/get-user")
-    public ResponseEntity<String> getUser(@RequestParam String username) {
-        Store<String> store = service.getUser(username);
+    public ResponseEntity<User> getUser(@RequestParam String username) {
+        Store<User> store = service.getUser(username);
         return ResponseEntity.status(store.getStatus()).body(store.getInstance());
     }
 }

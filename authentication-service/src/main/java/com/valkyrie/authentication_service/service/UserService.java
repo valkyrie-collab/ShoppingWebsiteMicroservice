@@ -52,9 +52,9 @@ public class UserService {
         return Store.initialize(HttpStatus.BAD_REQUEST, "Token not generated...");
     }
 
-    public Store<String> getUser(String username) {
+    public Store<User> getUser(String username) {
         User user = repo.findById(username).orElse(null);
         return user == null? Store.initialize(HttpStatus.BAD_REQUEST, null) :
-                Store.initialize(HttpStatus.OK, user.getUsername());
+                Store.initialize(HttpStatus.OK, user);
     }
 }
