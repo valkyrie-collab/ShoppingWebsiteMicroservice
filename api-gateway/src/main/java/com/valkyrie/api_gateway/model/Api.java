@@ -15,34 +15,34 @@ public class Api {
     @Bean
     public RouterFunction<ServerResponse> routerFunction() {
         return route("product-post").POST("/product/**", http())
-                .before(uri("http://localhost:8081/")).build()
+                .before(uri("http://product-service:8081/")).build()
                 .and(
                         route("product-get").GET("/product/**", http())
-                                .before(uri("http://localhost:8081/")).build()
+                                .before(uri("http://product-service:8081/")).build()
                 ).and(
                         route("product-delete").DELETE("/product/**", http())
-                                .before(uri("http://localhost:8081/")).build()
+                                .before(uri("http://product-service:8081/")).build()
                 ).and(
                         route("order-post").POST("/order/**", http())
-                                .before(uri("http://localhost:8082/")).build()
+                                .before(uri("http://order-service:8082/")).build()
                 ).and(
                         route("order-get").GET("/order/**", http())
-                                .before(uri("http://localhost:8082/")).build()
+                                .before(uri("http://order-service:8082/")).build()
                 ).and(
                         route("order-delete").DELETE("/order/**", http())
-                                .before(uri("http://localhost:8082/")).build()
+                                .before(uri("http://order-service:8082/")).build()
                 ).and(
                         route("cart-post").POST("/cart/**", http())
-                                .before(uri("http://localhost:8083/")).build()
+                                .before(uri("http://cart-service:8083/")).build()
                 ).and(
                         route("cart-get").GET("/cart/**", http())
-                                .before(uri("http://localhost:8083/")).build()
+                                .before(uri("http://cart-service:8083/")).build()
                 ).and(
                         route("cart-delete").DELETE("/cart/**", http())
-                                .before(uri("http://localhost:8083/")).build()
+                                .before(uri("http://cart-service:8083/")).build()
                 ).and(
                         route("authentication-post").POST("/user/**", http())
-                                .before(uri("http://localhost:8084/")).build()
+                                .before(uri("http://authentication-service:8084/")).build()
                 );
     }
 }

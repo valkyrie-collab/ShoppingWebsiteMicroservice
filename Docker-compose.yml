@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   service-registry:
-    build: ./api-gateway
+    build: ./service-registry
     ports:
       - "8761:8761"
     environment:
@@ -12,9 +12,11 @@ services:
       - my-network
 
   product-service:
-    build: ./authentication-service
+    build: ./product-service
     ports:
       - "8081:8081"
+    depends_on:
+      - postgres
     environment:
       URL: jdbc:postgresql://postgres:5432/product
       USERNAME: valkyrie
@@ -24,13 +26,14 @@ services:
     networks:
       - my-network
 
-#not application.properties not done
   order-service:
-    build: ./cart-service
+    build: ./order-service
     ports:
       - "8082:8082"
+    depends_on:
+      - postgres
     environment:
-      URL: jdbc:postgresql://postgres:5432/product
+      URL: jdbc:postgresql://postgres:5432/orders
       USERNAME: valkyrie
       PASSWORD: 3008
       JWTS_SECURITY: JE3pjQYJ6/+hrQO0zo/6dydd9p7Xez+aZYfXfbLgm+U=
@@ -38,13 +41,14 @@ services:
     networks:
       - my-network
 
-  #not application.properties not done
   cart-service:
-    build: ./order-service
+    build: ./cart-service
     ports:
       - "8083:8083"
+    depends_on:
+      - postgres
     environment:
-      URL: jdbc:postgresql://postgres:5432/product
+      URL: jdbc:postgresql://postgres:5432/cart
       USERNAME: valkyrie
       PASSWORD: 3008
       JWTS_SECURITY: JE3pjQYJ6/+hrQO0zo/6dydd9p7Xez+aZYfXfbLgm+U=
@@ -52,21 +56,21 @@ services:
     networks:
       - my-network
 
-  #not application.properties not done
   authentication-service:
     build: ./authentication-service
     ports:
       - "8084:8084"
+    depends_on:
+      - postgres
     environment:
-      URL: jdbc:postgresql://postgres:5432/product
+      URL: jdbc:postgresql://postgres:5432/authentication
       USERNAME: valkyrie
       PASSWORD: 3008
       JWTS_SECURITY: JE3pjQYJ6/+hrQO0zo/6dydd9p7Xez+aZYfXfbLgm+U=
-      PORT: 8081
+      PORT: 8084
     networks:
       - my-network
 
-  #not application.properties not done
   api-gateway:
     build: ./api-gateway
     ports:
